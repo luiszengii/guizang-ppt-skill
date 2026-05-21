@@ -1,11 +1,11 @@
 ---
-name: guizang-tutorial-skill
-description: 把一个知识点/技术概念/分析报告做成漂亮的单文件 HTML 教程或学习笔记。基于歸藏 guizang-ppt-skill 的视觉系统改造：保留 5 杂志风主题 + 4 瑞士风锚点色（共 9 种风格），但产出形态从「横向翻页 PPT」改成「纵向滚动长文档」。9 种风格**强制随机**，信息密度对齐 `~/Desktop/学习笔记/` 基线（不为视觉留白删信息）。输出归档到 `~/Desktop/学习笔记/<主题>-<要点>.html`。当用户说"做一份教程 / 学习笔记 / 知识点报告 / 把 XX 用 HTML 讲清楚"时使用。
+name: to-html
+description: 把一个知识点/技术概念/分析报告做成漂亮的单文件 HTML 教程或学习笔记。9 种视觉风格强制随机（5 杂志风主题 + 4 瑞士风锚点色，基于歸藏 guizang-ppt-skill 的视觉系统改造）。信息密度对齐 `~/Desktop/学习笔记/` 基线（不为视觉留白删信息）。输出归档到 `~/Desktop/学习笔记/<主题>-<要点>.html`。当用户说"to-html"、"做一份教程 / 学习笔记 / 知识点报告"、"把 XX 用 HTML 讲清楚 / 做成 HTML"时使用。
 ---
 
-# Guizang Tutorial Skill
+# to-html · 教程 / 学习笔记 / 知识点报告 → 单文件 HTML
 
-> Fork 自 [op7418/guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)。本 skill 把原 skill 的视觉品味（5 杂志风主题 + 4 瑞士风锚点色 + Lucide 图标 + Motion 入场动画 + WebGL 背景）**完整保留**，但产出形态从「横向翻页 PPT」变成「单页纵向滚动的教程/报告/学习笔记」，并强制随机选风格、强制信息密度对齐用户既有归档基线。
+> Fork 自 [op7418/guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)（本仓库名仍是 `guizang-tutorial-skill`,标记 fork 来源）。本 skill 把原 skill 的视觉品味（5 杂志风主题 + 4 瑞士风锚点色 + Lucide 图标 + Motion 入场动画 + WebGL 背景）**完整保留**，但产出形态从「横向翻页 PPT」变成「单页纵向滚动的教程/报告/学习笔记」，并强制随机选风格、强制信息密度对齐用户既有归档基线。Claude Code 里触发名为 `to-html`。
 
 ## 这个 Skill 做什么
 
@@ -18,7 +18,7 @@ description: 把一个知识点/技术概念/分析报告做成漂亮的单文�
 
 ## 何时使用
 
-✅ **合适**：把一个技术概念、原理、分析报告、知识点做成漂亮的 HTML 长文档归档（"用 HTML 讲一下 X"、"把这个原理做成学习笔记"、"给我做个 X 的解释报告"）
+✅ **合适**：把一个技术概念、原理、分析报告、知识点做成漂亮的 HTML 长文档归档（"to-html"、"用 HTML 讲一下 X"、"把这个原理做成学习笔记"、"给我做个 X 的解释报告"）
 
 ❌ **不合适**：分享 PPT / 横向翻页 deck / 演讲幻灯片 → 用原 [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)
 
@@ -131,12 +131,14 @@ open ~/Desktop/学习笔记/<主题>-<要点>.html
 2. **随机优于选择** — 用户喜欢这 9 种风格全部，所以不挑，bash 抽。每次新主题像开盲盒
 3. **信息密度 > 视觉留白** — 教程不是 PPT。留白美但不能牺牲内容
 4. **归档优于分享** — 产出存 `~/Desktop/学习笔记/`，按 `<主题>-<要点>.html` 命名，对齐用户既有约定
-5. **不带 PPT 模式** — 本 skill 专门做教程；要 PPT 用原 [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)
+5. **不带 PPT 模式** — `to-html` 专门做教程；要 PPT 用原 [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)
 
 ## 资源文件导览
 
+仓库目录名仍是 `guizang-tutorial-skill`（fork 来源标记，便于 cherry-pick 上游）；Claude Code 通过 `~/.claude/skills/to-html` symlink 加载，触发名为 `to-html`。
+
 ```
-guizang-tutorial-skill/
+guizang-tutorial-skill/   (fork 目录,SKILL.md 内 name=to-html)
 ├── SKILL.md                          ← 你正在读
 ├── README.md                         ← Fork 缘起 + 与原 skill 区别
 ├── assets/
@@ -163,7 +165,7 @@ guizang-tutorial-skill/
 
 ## 与原 guizang-ppt-skill 的区别（速查表）
 
-| 维度 | 原 PPT skill | 本 Tutorial skill |
+| 维度 | 原 PPT skill | `to-html` (本 fork) |
 |---|---|---|
 | 产出 | 横向翻页单 HTML | 纵向滚动单 HTML |
 | 触发 | PPT / deck / 分享 / 演讲 | 教程 / 报告 / 学习笔记 / 知识点 |
