@@ -1521,23 +1521,40 @@ function setActive(i){
   darkMode = isDark;
 }
 
+// IO 只负责"首次进入视口 -> 触发入场动效"
 const io = new IntersectionObserver((entries)=>{
-  let best=null,bestRatio=0;
   entries.forEach(e=>{
-    if(e.isIntersecting && e.intersectionRatio > bestRatio){
-      best=e.target; bestRatio=e.intersectionRatio;
-    }
     if(e.isIntersecting && !e.target.dataset.played && window.__playSlide){
       e.target.dataset.played='1';
       window.__playSlide(slides.indexOf(e.target));
     }
   });
-  if(best) setActive(slides.indexOf(best));
-}, {threshold:[0.3,0.55,0.8]});
+}, {threshold:0.2});
 slides.forEach(s=>io.observe(s));
 
+// active 判定改用 scroll: 找最后一个"顶部 ≤ viewport 33% 判定线"的 section
+let rafActive=0;
+function updateActive(){
+  rafActive=0;
+  const ref = innerHeight * 0.33;
+  let activeIdx = 0;
+  for(let i=0;i<slides.length;i++){
+    if(slides[i].getBoundingClientRect().top <= ref) activeIdx = i;
+  }
+  if(scrollY + innerHeight >= document.documentElement.scrollHeight - 4){
+    activeIdx = slides.length - 1;
+  }
+  setActive(activeIdx);
+}
+function onScrollActive(){
+  if(rafActive) return;
+  rafActive = requestAnimationFrame(updateActive);
+}
+addEventListener('scroll', onScrollActive, {passive:true});
+addEventListener('resize', onScrollActive);
+
 // 4. 初始化首屏 active + 支持 URL ?section=N 直达
-setActive(0);
+updateActive();
 const initialParam = new URLSearchParams(location.search).get('section') || new URLSearchParams(location.search).get('slide');
 if(initialParam){
   const i = Number(initialParam) - 1;

@@ -655,25 +655,42 @@ function setActive(i){
   document.body.classList.toggle('light-bg', th==='light');
 }
 
+// IO 只负责"首次进入视口 -> 触发入场动效"（不再用它判 active，避免相邻节同时可见时药丸跳来跳去）
 const io = new IntersectionObserver((entries)=>{
-  // 选当前可见且与视口重叠度最高的那个 section 作为 active
-  let best=null,bestRatio=0;
   entries.forEach(e=>{
-    if(e.isIntersecting && e.intersectionRatio > bestRatio){
-      best=e.target; bestRatio=e.intersectionRatio;
-    }
-    // 首次进入视口触发该 section 的入场动效（仅一次）
     if(e.isIntersecting && !e.target.dataset.played && window.__playSlide){
       e.target.dataset.played='1';
       window.__playSlide(slides.indexOf(e.target));
     }
   });
-  if(best) setActive(slides.indexOf(best));
-}, {threshold:[0.3,0.55,0.8]});
+}, {threshold:0.2});
 slides.forEach(s=>io.observe(s));
 
-// 4. 初始化首屏 active（IO 可能要等一帧）
-setActive(0);
+// active 判定改用 scroll: 找最后一个"顶部 ≤ viewport 33% 判定线"的 section
+// 这比 IO 稳定得多（O(N) 扫描 + rAF 节流,N≤10 几乎没成本）
+let rafActive=0;
+function updateActive(){
+  rafActive=0;
+  const ref = innerHeight * 0.33;
+  let activeIdx = 0;
+  for(let i=0;i<slides.length;i++){
+    if(slides[i].getBoundingClientRect().top <= ref) activeIdx = i;
+  }
+  // 滚到底部时强制最后一节 active（防最后一节 top > ref 的边界）
+  if(scrollY + innerHeight >= document.documentElement.scrollHeight - 4){
+    activeIdx = slides.length - 1;
+  }
+  setActive(activeIdx);
+}
+function onScrollActive(){
+  if(rafActive) return;
+  rafActive = requestAnimationFrame(updateActive);
+}
+addEventListener('scroll', onScrollActive, {passive:true});
+addEventListener('resize', onScrollActive);
+
+// 4. 初始化首屏 active
+updateActive();
 
 // 5. 键盘 B = 低功耗切换（保留 PPT 模板的低功耗机制）
 addEventListener('keydown',e=>{
