@@ -123,7 +123,38 @@ open ~/Desktop/学习笔记/<主题>-<要点>.html
 
 对照 `references/checklist.md` 的 **「教程模式信息密度自检」** section（P0 必过）+ 原 skill 的视觉规则（继续适用，**风格 B 仍需遵守 swiss-layout-lock**）。
 
+**强制自检项**：
+- ✅ HTML 里有「隐藏滚动条」CSS（已在两个 template 里 baked-in，不要删掉。grep 关键词 `scrollbar-width: none` 应该能找到）
+- ✅ 文件命名是 `<主题>-<要点>.html`，存到 `~/Desktop/学习笔记/`
+- ✅ `<title>` 与归档卡片显示的标题一致
+
 把产出文件路径报给用户，让他验证。
+
+### Step 5 · 注册到学习笔记主页（必做）
+
+`~/Desktop/学习笔记/index.html` 是所有笔记的入口主页，它通过同目录的 `notes.js` 读取笔记列表。**每次生成新 HTML 后，必须把这条笔记追加到 `notes.js` 的 `window.NOTES` 数组**，否则主页看不到。
+
+操作：
+
+1. `Read` `~/Desktop/学习笔记/notes.js`，看现有数组结构和已有 slug
+2. `Edit` 在数组末尾追加一项（注意逗号），字段如下：
+
+```js
+{
+  slug: "kebab-case-英文-slug",         // 必填，唯一,英文小写连字符,不要中文
+  title: "主题 · 要点（与文件 title 一致）",
+  desc: "一句话描述（30-80 字，回答'这篇讲什么/为什么有用'）",
+  category: "Deployment | Networking | Domain | Frontend | Backend | ...", // 一个英文大类
+  date: "YYYY-MM-DD",                    // 今天日期
+  file: "<生成时用的中文文件名>.html",    // 与 Step 4 写入的实际文件名一致
+},
+```
+
+3. 如果这次是给**已有笔记新增风格变体**（罕见，比如用户主动让你为某篇换风格再做一版），不要新增条目，而是找到原条目把 `file` 改成 `variants: [{label, file}, ...]` 结构（看 `vercel-preview-commit-access` 那条做参考）
+
+4. 不要碰 `index.html`，它不需要改。
+
+完成后，告诉用户："已加入主页索引，打开 `~/Desktop/学习笔记/index.html` 可看到新卡片。"
 
 ## 核心原则
 
@@ -132,6 +163,7 @@ open ~/Desktop/学习笔记/<主题>-<要点>.html
 3. **信息密度 > 视觉留白** — 教程不是 PPT。留白美但不能牺牲内容
 4. **归档优于分享** — 产出存 `~/Desktop/学习笔记/`，按 `<主题>-<要点>.html` 命名，对齐用户既有约定
 5. **不带 PPT 模式** — `to-html` 专门做教程；要 PPT 用原 [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)
+6. **滚动条统一隐藏** — 所有产出 HTML 都不显示侧边滚动条（保留滚动功能），与归档主页 `index.html` 视觉一致。两个 template 已 baked-in `scrollbar-width: none` + `::-webkit-scrollbar { display: none }`，不要删除这段 CSS
 
 ## 资源文件导览
 
