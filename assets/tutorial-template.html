@@ -28,7 +28,7 @@
     --sans-zh:"Noto Sans SC",source-han-sans-sc,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{width:100%;min-height:100%;overflow-x:hidden;overflow-y:auto;background:var(--ink);color:var(--paper);font-family:var(--sans-zh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}
+  html,body{width:100%;min-height:100%;overflow-x:hidden;overflow-y:auto;background:var(--ink);color:var(--paper);font-family:var(--sans-zh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 
   /* ============ WebGL 双背景 ============ */
   canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;transition:opacity 1.2s ease}
@@ -47,10 +47,12 @@
   .slide.light{color:var(--ink);background:var(--paper)}
   .slide.dark{color:var(--paper);background:var(--ink)}
 
-  /* 默认页：遮罩较厚，保证文字可读 */
+  /* 默认页：遮罩较厚，保证文字可读
+     ⚠ 不要给这两行的 ::before 加 backdrop-filter:blur —— 和 fixed WebGL canvas 叠在一起会让 GPU 每帧重新模糊背后画面,直接造成滚动掉帧;
+     而 78% 实色遮罩下 blur 的视觉效果本来就几乎看不见,纯亏。 */
   .slide::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:background .7s ease}
-  .slide.light::before{background:rgba(var(--paper-rgb),.78);backdrop-filter:blur(3px)}
-  .slide.dark::before{background:rgba(var(--ink-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.light::before{background:rgba(var(--paper-rgb),.78)}
+  .slide.dark::before{background:rgba(var(--ink-rgb),.78)}
   /* Hero 页：遮罩大幅降低，让 WebGL 背景明显透出 */
   .slide.hero.light::before{background:rgba(var(--paper-rgb),.16);backdrop-filter:none}
   .slide.hero.dark::before{background:rgba(var(--ink-rgb),.12);backdrop-filter:none}
@@ -449,6 +451,14 @@
     .grid-2-7-5,.grid-2-6-6,.grid-2-8-4{grid-template-columns:1fr}
   }
 </style>
+<style>
+  /* hide scrollbars (kept scrolling functional) — baked into to-html templates */
+  html { scrollbar-width: none; -ms-overflow-style: none; }
+  html::-webkit-scrollbar { width: 0; height: 0; display: none; }
+  body { scrollbar-width: none; -ms-overflow-style: none; }
+  body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
 </head>
 <body>
 <script>
@@ -829,6 +839,13 @@ if(motion){
     }
   });
 }
+</script>
+<!-- Lenis: type C 丝滑(惯性滚动)。CDN 失败/低动效偏好 -> 跳过初始化,fallback 到原生 60fps 滚动。详见 docs/adr/0001-lenis-smooth-scroll.md -->
+<script src="https://unpkg.com/lenis@1.3.23/dist/lenis.min.js"></script>
+<script>
+  if (window.Lenis && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    window.lenis = new Lenis({ autoRaf:true, autoToggle:true, anchors:true, allowNestedScroll:true, naiveDimensions:true, stopInertiaOnNavigate:true });
+  }
 </script>
 </body>
 </html>

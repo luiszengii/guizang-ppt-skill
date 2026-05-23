@@ -45,10 +45,12 @@
   .slide.light{color:var(--ink);background:var(--paper)}
   .slide.dark{color:var(--paper);background:var(--ink)}
 
-  /* 默认页：遮罩较厚，保证文字可读 */
+  /* 默认页：遮罩较厚，保证文字可读
+     ⚠ 不要给这两行的 ::before 加 backdrop-filter:blur —— 和 fixed WebGL canvas 叠在一起会让 GPU 每帧重新模糊背后画面,直接造成滚动掉帧;
+     而 78% 实色遮罩下 blur 的视觉效果本来就几乎看不见,纯亏。 */
   .slide::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:background .7s ease}
-  .slide.light::before{background:rgba(var(--paper-rgb),.78);backdrop-filter:blur(3px)}
-  .slide.dark::before{background:rgba(var(--ink-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.light::before{background:rgba(var(--paper-rgb),.78)}
+  .slide.dark::before{background:rgba(var(--ink-rgb),.78)}
   /* Hero 页：遮罩大幅降低，让 WebGL 背景明显透出 */
   .slide.hero.light::before{background:rgba(var(--paper-rgb),.16);backdrop-filter:none}
   .slide.hero.dark::before{background:rgba(var(--ink-rgb),.12);backdrop-filter:none}

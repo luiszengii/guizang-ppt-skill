@@ -105,7 +105,8 @@
 
   /* Hero 页透出网格背景多一点 */
   .slide.hero{background:transparent}
-  .slide.hero.grey{background:rgba(var(--paper-rgb),.86);backdrop-filter:blur(1px)}
+  /* ⚠ 不要给 .slide.hero.grey 加 backdrop-filter:blur —— 和 fixed WebGL canvas 互殴掉帧 */
+  .slide.hero.grey{background:rgba(var(--paper-rgb),.86)}
   .slide.hero.dark{background:rgba(var(--ink-rgb),.92);color:var(--paper)}
 
   /* ============ 装饰: 极细分隔线 + 点阵矩阵 ============ */
